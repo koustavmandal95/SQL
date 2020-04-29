@@ -20,4 +20,4 @@ create table student (
   );
   
 insert into student(name,major) values('Jack','Biology');
-insert into student(name,major) values('John','Sociology');
+insert into student(name,major) values('John','Sociology'); // Auto_increment takes care of the student_id.
