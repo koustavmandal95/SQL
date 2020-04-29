@@ -1,0 +1,2 @@
+select student.name, student.major from student order by name asc;
+select student.name, student.major from student order by name desc;
