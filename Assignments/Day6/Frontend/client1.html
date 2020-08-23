@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real life </title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script>
+           $(document).ready(function() {
+               var x = {};
+                $("#t1").blur(function(event){
+                    if($.trim($("#t1").val())==""){
+                    event.preventDefault();
+                    alert("It's empty please in the number");
+                }
+                else{
+                    var data = {
+                    "empno":$("#t1").val()
+                }
+                var y = {
+                    type:"post",
+                    dataType:"json",
+                    data:data,
+                    url:"../Backend/getDetail.php",
+                    success: function(gvs){
+                        console.log(gvs);
+                        for(i=0;i<gvs.length;i++){
+                            if(gvs[0].status == 0){
+                                $('#content2').append(`<h1> No record found </h1>`); 
+                                $('#t2').prop("disabled",false);
+                                    $('#t3').prop("disabled",false)
+                                    $('#add').prop("disabled",false);
+                            }else{
+                                $('#content2').append(`<h3> ${gvs[i].empno}  ${gvs[i].phone}   ${gvs[i].loc} </h3>`);
+                                if(!gvs[i].phone){
+                                    $('#add').prop("disabled",false);
+                                    $('#t2').prop("disabled",false);
+                                    $('#t3').prop("disabled",false)
+                                }else{
+                                 
+                                    $('#t2').val(gvs[i].phone);
+                                    $('#t3').val(gvs[i].loc);
+                                    $('#t2').prop("disabled",false);
+                                    $('#t3').prop("disabled",false)
+                                    $('#add').prop("disabled",true);
+                                    $('#update').prop("disabled",false);
+                                    $('#remove').prop("disabled",false)
+                                }
+                            }
+                        }
+                    },
+                    error:function(e){
+                        alert('We have trouble '+ e.msg);
+                    }
+                };
+                $.ajax(y);
+                }
+                });
+
+                $("#t1").blur(function(event){
+                    if($.trim($("#t1").val())==""){
+                    event.preventDefault();
+                    // alert("It's empty please in the number");
+                }
+                else{
+                    var data = {
+                    "empno":$("#t1").val()
+                }
+                var x = {
+                    type:"post",
+                    dataType:"json",
+                    data:data,
+                    url:"../Backend/displayAll.php",
+                    success: function(gvs){
+                        $('#content1').html('<h1>The Records are :- </h1>');
+                        for(i=0;i<gvs.length;i++){
+                                $('#content1').append(`<h3> ${gvs[i].empno}  ${gvs[i].phone}   ${gvs[i].loc} </h3>`);
+                        }
+                    },
+                    error:function(e){
+                        alert('We have trouble '+ e.msg);
+                    }
+                };
+                $.ajax(x);
+                }
+                });
+
+                $("#add").click(function(event){
+                    if($.trim($("#t1").val())==""){
+                    event.preventDefault();
+                    alert("It's empty please in the number");
+                }
+                else{
+                    var data = {
+                    "empno":$("#t1").val(),
+                    "phone":$("#t2").val(),
+                    "loc":$("#t3").val()
+                }
+                var z = {
+                    type:"post",
+                    dataType:"json",
+                    data:data,
+                    url:"../Backend/insert.php",
+                    success: function(gvs){
+                        // console.log(gvs.status);
+                        gvs = JSON.parse(gvs)
+                        if(gvs.status ==1){
+                            $("#msg").html("Same details Pick a unique Phone Number");
+                        }
+                        else{
+                            $("#msg").html("Add successfully");
+                            $('#add').prop("disabled",true);
+                            $('#t2').prop("disabled",true);
+                            $('#t3').prop("disabled",true);
+                            $('#t1').focus()
+                            $.ajax(x);
+                        }
+                    },
+                    error:function(e){
+                        alert('We have trouble '+ e.msg);
+                    }
+                };
+                $.ajax(z);
+                }
+                });
+                $("#update").click(function(event){
+                    if($.trim($("#t1").val())==""){
+                    event.preventDefault();
+                    alert("It's empty please in the number");
+                }
+                else{
+                    var data = {
+                        "empno":$('#t1').val(),
+                    "phone":$("#t2").val(),
+                    "loc":$("#t3").val()
+                }
+                var z = {
+                    type:"post",
+                    dataType:"json",
+                    data:data,
+                    url:"../Backend/modify.php",
+                    success: function(gvs){
+                        // console.log(gvs.status);
+                        gvs = JSON.parse(gvs)
+                        if(gvs.status ==1){
+                            $("#msg").html("Error could not update choice unique phone nO!!!");
+                        }
+                        else{
+                            $("#msg").html("updated successfully");
+                            $('#update').prop("disabled",true);
+                            $('#remove').prop("disabled",true);
+                            $('#t2').prop("disabled",true);
+                            $('#t3').prop("disabled",true);
+                            $('#t1').focus()
+                            $.ajax(x);
+                        }
+                    },
+                    error:function(e){
+                        alert('We have trouble '+ e.msg);
+                    }
+                };
+                $.ajax(z);
+                }
+                });
+
+                $("#remove").click(function(event){
+                    if($.trim($("#t1").val())==""){
+                    event.preventDefault();
+                    alert("It's empty please in the number");
+                }
+                else{
+                    var data = {
+                        "empno":$('#t1').val(),
+                }
+                var z = {
+                    type:"post",
+                    dataType:"json",
+                    data:data,
+                    url:"../Backend/delete.php",
+                    success: function(gvs){
+                        // console.log(gvs.status);
+                        gvs = JSON.parse(gvs)
+                        if(gvs.status ==1){
+                            $("#msg").html("Could not delete !!!");
+                        }
+                        else{
+                            $("#msg").html("delete successfully");
+                            $('#update').prop("disabled",true);
+                            $('#remove').prop("disabled",true);
+                            $('#t2').prop("disabled",true);
+                            $('#t3').prop("disabled",true);
+                            $('#t2').val("");
+                            $("t3").val("");
+                            $('#t1').focus()
+                            $.ajax(x);
+                        }
+                    },
+                    error:function(e){
+                        alert('We have trouble '+ e.msg);
+                    }
+                };
+                $.ajax(z);
+                }
+                });
+           });
+    </script>
+</head>
+<body>
+   <br> EmpNo    <input type="text" name="EmpNo" id="t1"> <span id="msg"> </span>
+   <br> 
+   <br> MobileNo <input type="text" name="MobileNo" id="t2" disabled>
+   <br>
+   <br> Location <input type="text" name="Location" id="t3" disabled>
+   <br>
+   <br>
+    <input type="button" value="add"  id="add" disabled>
+    <input type="button" value="update" id="update" disabled>
+    <input type="button" value="remove" id="remove" disabled>
+    <div id = "content1">
+
+
+    </div>
+    <hr> Selected Record Details</hr>
+    <div id = "content2">
+
+
+    </div>
+    
+</body>
+</html>

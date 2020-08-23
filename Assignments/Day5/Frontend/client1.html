@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $("#t1").blur(function(event){
+                if($.trim($("#t1").val())==""){
+                    event.preventDefault();
+                    alert("It's empty please in the number");
+                }
+                else{
+                    var data = {
+                    "numberGiven":parseInt($("#t1").val()),
+                    "option":1
+                }
+                var x = {
+                    type:"post",
+                    dataType:"json",
+                    data:data,
+                    url:"../Backend/back.php",
+                    data:data,
+                    success: function(gvs){
+                        gvs = JSON.parse(gvs)
+                        $('#t1').prop("disabled",true);
+                        if(gvs.status==0){
+                            $('#add').prop("disabled",false);
+                            $('#msg').html("Not Present in array")
+                        }
+                        else{
+                            $('#msg').html("Present in array")
+                            $('#remove').prop("disabled",false);
+                            $('#modify').prop("disabled",false);
+                            $('#t2').prop("disabled",false);
+                        }
+                    },
+                    error:function(e){
+                        alert('We have trouble '+ e.msg);
+                    }
+                };
+                $.ajax(x);
+                }
+            });
+
+
+            $('#add').click(function(event){
+                event.preventDefault();
+                var data = {
+                    "numberGiven":parseInt($("#t1").val()),
+                    "option":2
+                }
+                var y ={
+                    type:"post",
+                    dataType:"json",
+                    data:data,
+                    url:"../Backend/back.php",
+                    success:function(gvs){
+                        gvs = JSON.parse(gvs);
+                        if(gvs.status==1){
+                            $('#msg').html(" Add successfuly ");
+                            $('#add').prop("disabled",true);
+                            $("#t1").prop("disabled",false);
+                            $("#t1").val("");
+                        }
+                        else{
+                            $('#msg').html("Could not add invalid data");
+                        }
+                    },
+                    error:function(e){
+                        alert('We have trouble '+ e.msg);
+                    }
+                };
+                $.ajax(y);
+            });
+            $('#modify').click(function(){
+                event.preventDefault();
+                var data ={
+                    "numberGiven":parseInt($('#t1').val()),
+                    "modifiedvalue":parseInt($('#t2').val()),
+                    "option":3
+                }
+                var z = {
+                    type:"post",
+                    dataType:"json",
+                    data:data,
+                    url:"../Backend/back.php",
+                    success:function(gvs){
+                        gvs = JSON.parse(gvs);
+                        if(gvs.status == 1){
+                            $('#msg').html(" updated successfull ");
+                            $("#t1").val("");
+                            $("#t1").prop("disabled",false);
+                            $('#t2').prop("disabled",true);
+                            $('#remove').prop("disabled",true);
+                            $('#modify').prop("disabled",true);
+                        }
+                        else{
+                            $('#msg').html(" Errro Enter a unique value ");
+                            $('#remove').prop("disabled",true);
+                        }
+                    },
+                    error:function(e){
+                        alert('We have trouble '+ e.msg);
+                    }
+                };
+                $.ajax(z);
+            });
+            $('#remove').click(function() {
+                var data ={
+                    "numberGiven":parseInt($('#t1').val()),
+                    "option":4
+                }
+                var z = {
+                    type:"post",
+                    dataType:"json",
+                    data:data,
+                    url:"../Backend/modify.php",
+                    success:function(gvs){
+                        gvs = JSON.parse(gvs);
+                        $('#remove').prop("disabled",true);
+                        $('#modify').prop("disabled",true);
+                        $('#t2').prop('disabled',true);
+                        $('#t1').prop('disabled',false);
+                        $("#t1").val("");
+                        if(gvs.status == 1){
+                            $('#msg').html("Deleted");
+                        }
+                        else{
+                            $('#msg').html("could operate");
+                        }
+                    },
+                    error:function(e){
+                        alert('We have trouble '+ e.msg);
+                    }
+                };
+                $.ajax(z);
+            });
+        });
+    </script>
+</head>
+<body>
+   <br><label>Enter the number :</label> <input type="text"  id="t1" />
+   <span id="msg"></span>
+   <br>
+   <br><label>Modify the number :</label> <input type="text"  id="t2" disabled="disabled" />
+
+
+   <br>
+   <br>
+   <input type="button" id="add" value="Add" disabled="disabled">
+   <input type="button" id="remove" value="Remove" disabled="disabled">
+   <input type="button" id="modify" value="Modify" disabled="disabled">
+</body>
+</html>
